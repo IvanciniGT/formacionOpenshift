@@ -59,7 +59,17 @@ data:
 #                  secretKeyRef:
 #                    name: secretos-mariadb
 #                    key: MYSQL_PASSWORD
-
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: peticion-volumen-mariadb
+spec:
+  resources:
+    requests:
+      storage: 50Gi  
+  accessModes:
+    - ReadWriteOnce
 ---
 kind: Deployment
 apiVersion: apps/v1
@@ -77,11 +87,18 @@ spec:
               labels: 
                   app: mariadb
           spec: 
+            volumes:
+              - name: almacenamiento-mariadb
+                persistentVolumeClaim: 
+                  claimName: peticion-volumen-mariadb
             containers:
               -   name: contenedor-mariadb
                   image: mariadb:latest 
                   ports:
                     - containerPort: 3306
+                  volumeMounts:
+                    - name: almacenamiento-mariadb
+                      mountPath: /var/lib/mysql
                   env:
                     - name: MYSQL_ROOT_PASSWORD
                       valueFrom:

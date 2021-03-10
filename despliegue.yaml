@@ -103,6 +103,10 @@ spec:
                         secretKeyRef:
                           name: secretos-mariadb
                           key: MYSQL_PASSWORD
+                  resources:
+                    requests:
+                      cpu: "1"         
+                      memory: 1Gi
                           
 
 

@@ -1,0 +1,311 @@
+---
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: nginx
+...
+---
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+    name: ConfiguracionMariaDB  # Idenfificador del objeto en Kubernetes/Openshift
+    labels:
+        app: nginx   # Viene a ser algo identificativo del objeto, pero no es un IDENTIFICADOR UNICO
+data:
+  MYSQL_ROOT_PASSWORD: pass
+  MYSQL_DATABASE: midb
+  MYSQL_USER: miuser
+  MYSQL_PASSWORD: pass2
+---
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+    name: ConfiguracionWAS  # Idenfificador del objeto en Kubernetes/Openshift
+    labels:
+        app: nginx   # Viene a ser algo identificativo del objeto, pero no es un IDENTIFICADOR UNICO
+data:
+  domain.properties: |
+    username=weblogic
+    password=welcome1---
+
+kind: Secret
+apiVersion: v1
+metadata:
+    name: ConfiguracionSecretaWAS  # Idenfificador del objeto en Kubernetes/Openshift
+    labels:
+        app: nginx   # Viene a ser algo identificativo del objeto, pero no es un IDENTIFICADOR UNICO
+data:
+  domain.properties: dXNlcm5hbWU9d2VibG9naWMKcGFzc3dvcmQ9d2VsY29tZTE=
+# Contraseñas
+# Certificados
+# Claves privadas encripcion / publica
+--- # Inicio de documento
+kind: Pod
+apiVersion: v1
+metadata:
+    name: pod-nginx  # Idenfificador del objeto en Kubernetes/Openshift
+    labels:
+        app: nginx   # Viene a ser algo identificativo del objeto, pero no es un IDENTIFICADOR UNICO
+
+spec:
+    containers:
+        -   name: contenedor-nginx
+            image: nginx:latest
+            ports:
+              - containerPort: 80   
+            # Si no pongo esta linea de arriba... Puedo acceder al contenedor? SI   
+            #                                     Puedo acceder al puerto?     PERFECTAMENTE !
+            # Entonces para que vales esta linea? Informativa para Kubernetes... 
+            # Para cuando creemos el servicio  
+
+        -   name: contenedor-fedora
+            image: fedora:latest
+            command: ['sh', '-c', 'sleep 3600;']
+            env:
+              -   name: MYSQL_ROOT_PASSWORD
+                  valueFrom: 
+                    configMapKeyRef:
+                      name: ConfiguracionMariaDB
+                      key: MYSQL_ROOT_PASSWORD
+              -   name: MYSQL_DATABASE
+                  valueFrom: 
+                    configMapKeyRef:
+                      name: ConfiguracionMariaDB
+                      key: MYSQL_DATABASE
+            volumeMounts:
+              name: configuracionWAS
+              mountPath: /u01/oracle/properties
+
+    volumes:
+      - name: configuracionWAS
+        configMap:
+          name: ConfiguracionWAS
+      - name: configuracionSecretaWAS
+        secret:
+          name: ConfiguracionWAS
+
+            # curl localhost:80 >>> NGINX
+... # Final de Documento. Es opcional
+---
+kind: Pod
+apiVersion: v1
+metadata:
+    name: pod-solo-fedora  # Idenfificador del objeto en Kubernetes/Openshift
+    labels:
+        app: fedora   # Viene a ser algo identificativo del objeto, pero no es un IDENTIFICADOR UNICO
+
+spec:
+    containers:
+        -   name: contenedor-fedora
+            image: fedora:latest
+            command: ['sh', '-c', 'sleep 3600;']
+            # curl localhost:80 >>> NO CONTESTA NADIE
+            # curl IP_pod-nginx:80 >>> SI CONTESTA.... PERO !!!!
+              # Puede cambiar la IP del POD
+            # curl servicio-nginx:8080 >>> NGINX SI CONTESTA
+            #                       vvv  Nombre del proyecto
+            # curl servicio-nginx.nginx:8080 >>> NGINX SI CONTESTA
+            #       ^^^   Quien se encarga de resolver ese nombre? DNS interno de Kubernetes/Openshift  
+            # DNS es un POD que se ejecuta en el plano de control
+---
+kind: Service
+apiVersion: v1
+metadata:
+    name: servicio-nginx
+
+spec:
+  ports:
+    - port: 8080       # El puerto en el que opera el servicio
+      targetPort: 80   # El puerto que se abre en el/los contenedor(es)
+  selector:
+    app: nginx
+# Al crear el servicio, que voy a tener asociado al servicio? Una direccion IP
+# Por ejemplo: 192.168.200.200:8080  >>>>> X.X.X.X:80
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+    name: ruta-nginx
+
+spec:
+  host: nginx.RUTA_DEL_CLUSTER
+  to:
+    kind: Service
+    name: service-nginx
+  port:
+    targetPort: 8080
+
+
+
+
+
+---
+
+
+
+
+  kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: nginx-example
+  namespace: nginx
+  labels:
+    template: nginx-example
+    template.openshift.io/template-instance-owner: ff16808d-eca8-4a3a-9574-278af917224c
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'nginx-example:latest'
+  resources: {}
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        namespace: openshift
+        name: 'nginx:1.16-el8'
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/IvanciniGT/webEjemploAnsible'
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv0002
+spec:
+  capacity:
+    storage: 100Gi   # Informativo
+  hostPath:
+    path: /mnt/pv-data/pv0002
+
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Recycle
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: peticion-volumen-fedora
+spec:
+  resources:
+    requests:
+      storage: 150Gi  
+  accessModes:
+    - ReadWriteOnce
+
+---
+kind: Pod
+apiVersion: v1
+metadata:
+    name: pod-solo-fedora  
+    labels: 
+        app: fedora
+        otraetiqueta: valor
+
+spec:
+    containers:
+        -   name: contenedor-fedora1
+            image: fedora:latest
+            command: ['sh', '-c', 'sleep 3600;']
+            volumeMounts:
+                - name: el-volumen-persistente-de-mi-pod
+                  mountPath: /volumen_persistente
+                - name: volumen-compartido
+                  mountPath: /compartido
+
+        -   name: contenedor-fedora2
+            image: fedora:latest
+            command: 
+              - 'sh'
+              - '-c'
+              - 'sleep 3600;'
+            volumeMounts:
+                - name: volumen-compartido
+                  mountPath: /compartida
+    volumes:
+        - name: el-volumen-persistente-de-mi-pod
+          persistentVolumeClaim: 
+              claimName: peticion-volumen-fedora
+        - name: volumen-compartido
+          empty-dir: {}
+            
+            
+---
+#ResourceQuotas  : Limitar Recursos de que? NamesSpace/Proyecto
+#LimitRanges     : Limitar Recursos de los pods individuales que creamos dentro de un NamesSpace/Proyecto
+
+---
+kind: ResourceQuota
+apiVersion: v1
+metadata:
+    name: limitarResursosNamespaceDesarrollo
+    namespace: desarrollo
+spec:
+  hard:
+    pods: "4"                 # Solo puedo tener 4 pods en el namespace desarrollo
+    requests.cpu: "2"         # No te voy a garantizar más de 2 cpus
+    requests.memory: 2Gi      # No te voy a garantizar mñas de 2Gi
+    limit.cpu: "4"            # Entre los 4 posibles pods que se pueden montar, 
+                              # no van a utilizar nunca jamas más de 4 cores
+                              # Que pasa si lo intentan? Se carga pods
+    limit.memory: 4Gi         # Te dejo , si hay hueco, que puedas usar hasta 4Gi
+# ^^^^
+# Administrador del Cluster
+
+# Reservar CPUs?
+# Reservar Memoria?
+# Kubernetes/OS me garantiza que me va a poner en un nodo con al menos esa CPU y Memoria disponible
+# Scheduler: 
+
+#Nodo 1: 4 cores
+#  Pod1: garantizar 0.5 cores 
+#  Pod2: garantizar 0.5 core
+#  Pod3: garantizar 1 cores    
+  # Si puntualmente necesitas usar 4 cores, te dejo... siempre que haya hueco
+
+# VVVV Quien hace esas configuraciones/peticiones?
+# Donde se escribe esto en el fichero YAML >>> Deployment/StatfulSet/Pod/Job/CronJob
+# Desarrollador PIDE
+#Pods:
+#  Pod1: garantizar 0.5 cores 
+#  Pod2: garantizar 0.5 core
+#  Pod3: garantizar 1 cores  
+
+
+---
+kind: LimitRange
+apiVersion: v1
+metadata:
+    name: limitarResursosIndividualesNamespaceDesarrollo
+    namespace: desarrollo
+spec:
+  limits:
+    default:
+      cpu: "2"           # Utilizable como mucho
+      memory: 2Gi        # Utilizable como mucho
+    defaultRequest:
+      cpu: "1"           # Garantizado, si no pides nada
+      memory: 1Gi        # Garantizado, si no pides nada
+    type: Container
+# ^^^^Administrador
+
+#Maquinas con 8cpu
+#  Pod: Pide 4CPUs garantizadas
+#Maquinas con 8cpu
+#  Otra maquina entera disponible para poder dar la HA del POD
+#Maquinas con 8cpu
+
+#Entorno de produccion:
+#  Garantizar a nivel de Namespace: 12CPUs
+#  Como mucho, para cada pod, me puedes pedir 4 cpus
+
+#Pod: Pide 7CPUs garantizadas

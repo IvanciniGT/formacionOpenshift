@@ -60,6 +60,9 @@ data:
 #                    name: secretos-mariadb
 #                    key: MYSQL_PASSWORD
 ---
+#Volumenes: 
+#    MariaDB: Volumen Persistente
+
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -124,18 +127,53 @@ spec:
                     requests:
                       cpu: "1"         
                       memory: 1Gi
-                          
-
-
-
-
-
-
-
+                         
 #Tomcat: Deployment    (2)
+# Volumen
+
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: peticion-volumen-tomcat
+spec:
+  resources:
+    requests:
+      storage: 50Gi  
+  accessModes:
+#    - ReadWriteMany
+    - ReadWriteOnce
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: deployment-tomcat  
+    labels: 
+        app: tomcat
+spec:
+    replicas: 2
+    selector: 
+        matchLabels:
+            app: tomcat
+    template:
+          metadata:
+              labels: 
+                  app: tomcat
+          spec: 
+            volumes:
+              - name: almacenamiento-tomcat
+                persistentVolumeClaim: 
+                  claimName: peticion-volumen-tomcat
+            containers:
+              -   name: contenedor-tomcat
+                  image: bitnami/tomcat:latest 
+                  ports:
+                    - containerPort: 8080
+                  volumeMounts:
+                    - name: almacenamiento-tomcat
+                      mountPath: /carpeta
+
 #    SECRET :
 #        fichero configuracion: Usuarios/Contraseñas
 #        tomcat-users.xml <<<- usuario/contraseña 
 
-#Volumenes: 
-#    MariaDB: Volumen Persistente

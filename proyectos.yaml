@@ -1,0 +1,36 @@
+#1º Crear un Project PRUEBAS
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: pruebas
+---
+#    Garantizar 2 cpus
+#    Garantizar 2 Gi
+kind: ResourceQuota
+apiVersion: v1
+metadata:
+    name: limita-recursos-pruebas
+    namespace: pruebas
+spec:
+  hard:
+    requests.cpu: "2"         
+    requests.memory: 2Gi
+---    
+#2º Crear un namespace PRODUCCION
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: produccion
+---
+#    Garantizar 4cpus
+#    Garantizar 4 Gi
+kind: ResourceQuota
+apiVersion: v1
+metadata:
+    name: limira-recursos-produccion
+    namespace: produccion
+spec:
+  hard:
+    requests.cpu: "4"         
+    requests.memory: 4Gi
+---    

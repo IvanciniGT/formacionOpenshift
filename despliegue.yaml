@@ -1,0 +1,76 @@
+#1º Crear un Project PRUEBAS
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: pruebas
+---
+#    Garantizar 2 cpus
+#    Garantizar 2 Gi
+kind: ResourceQuota
+apiVersion: v1
+metadata:
+    name: limiraRecursosPruebas
+    namespace: pruebas
+spec:
+  hard:
+    requests.cpu: "2"         
+    requests.memory: 2Gi
+---    
+#2º Crear un namespace PRODUCCION
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: produccion
+---
+#    Garantizar 4cpus
+#    Garantizar 4 Gi
+kind: ResourceQuota
+apiVersion: v1
+metadata:
+    name: limiraRecursosPruebas
+    namespace: pruebas
+spec:
+  hard:
+    requests.cpu: "4"         
+    requests.memory: 4Gi
+---    
+#MariaDB: Pod   >>>    Deployment  (1)
+#    Congigurarlo:
+#        ConfigMap <<< Nombre de la BBDD
+#        Secret    <<< Usuario/Password
+kind: Pod
+apiVersion: v1
+metadata:
+    name: pod-mariadb  
+    labels: 
+        app: mariadb
+spec:
+    containers:
+        -   name: contenedor-mariadb
+            image: mariadb:latest 
+            ports:
+              - containerPort: 3306
+            env:
+              - name: MYSQL_ROOT_PASSWORD
+                value: password1
+              - name: MYSQL_DATABASE
+                vale: midb
+              - name: MYSQL_USER
+                value: miusuario
+              - name: MYSQL_PASSWORD
+                value: password2
+
+
+
+
+
+
+
+
+#Tomcat: Deployment    (2)
+#    SECRET :
+#        fichero configuracion: Usuarios/Contraseñas
+#        tomcat-users.xml <<<- usuario/contraseña 
+
+#Volumenes: 
+#    MariaDB: Volumen Persistente

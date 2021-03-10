@@ -76,7 +76,8 @@ spec:
           metadata:
               labels: 
                   app: mariadb
-          containers:
+          spec: 
+            containers:
               -   name: contenedor-mariadb
                   image: mariadb:latest 
                   ports:

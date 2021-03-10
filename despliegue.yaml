@@ -1,65 +1,108 @@
-#1º Crear un Project PRUEBAS
-kind: Project
-apiVersion: project.openshift.io/v1
-metadata:
-  name: pruebas
----
-#    Garantizar 2 cpus
-#    Garantizar 2 Gi
-kind: ResourceQuota
+
+
+kind: ConfigMap
 apiVersion: v1
 metadata:
-    name: limiraRecursosPruebas
-    namespace: pruebas
-spec:
-  hard:
-    requests.cpu: "2"         
-    requests.memory: 2Gi
----    
-#2º Crear un namespace PRODUCCION
-kind: Project
-apiVersion: project.openshift.io/v1
-metadata:
-  name: produccion
+    name: configuracion-mariadb  
+    labels:
+        app: mariadb   
+data:
+  MYSQL_DATABASE: midb
 ---
-#    Garantizar 4cpus
-#    Garantizar 4 Gi
-kind: ResourceQuota
+kind: Secret
 apiVersion: v1
 metadata:
-    name: limiraRecursosPruebas
-    namespace: pruebas
-spec:
-  hard:
-    requests.cpu: "4"         
-    requests.memory: 4Gi
----    
+    name: secretos-mariadb  
+    labels:
+        app: mariab   
+data:
+  MYSQL_ROOT_PASSWORD: cGFzc3dvcmQx
+  MYSQL_USER: bWl1c3Vhcmlv
+  MYSQL_PASSWORD: cGFzc3dvcmQy
+---
+
 #MariaDB: Pod   >>>    Deployment  (1)
 #    Congigurarlo:
 #        ConfigMap <<< Nombre de la BBDD
 #        Secret    <<< Usuario/Password
-kind: Pod
-apiVersion: v1
+#kind: Pod
+#apiVersion: v1
+#metadata:
+#    name: pod-mariadb  
+#    labels: 
+#        app: mariadb
+#    namespace: pruebas NO LO VOY A HACER. Lo hago desde linea de comandos... Así es más flexible
+#spec:
+#    containers:
+#        -   name: contenedor-mariadb
+#            image: mariadb:latest 
+#            ports:
+#              - containerPort: 3306
+#            env:
+#              - name: MYSQL_ROOT_PASSWORD
+#                valueFrom:
+#                  secretKeyRef:
+#                    name: secretos-mariadb
+#                    key: MYSQL_ROOT_PASSWORD
+#              - name: MYSQL_DATABASE
+#                valueFrom:
+#                  configMapKeyRef:
+#                    name: configuracion-mariadb
+#                    key: MYSQL_DATABASE
+#              - name: MYSQL_USER
+#                valueFrom:
+#                  secretKeyRef:
+#                    name: secretos-mariadb
+#                    key: MYSQL_USER
+#              - name: MYSQL_PASSWORD
+#                valueFrom:
+#                  secretKeyRef:
+#                    name: secretos-mariadb
+#                    key: MYSQL_PASSWORD
+
+---
+kind: Deployment
+apiVersion: apps/v1
 metadata:
-    name: pod-mariadb  
+    name: deployment-mariadb  
     labels: 
         app: mariadb
 spec:
-    containers:
-        -   name: contenedor-mariadb
-            image: mariadb:latest 
-            ports:
-              - containerPort: 3306
-            env:
-              - name: MYSQL_ROOT_PASSWORD
-                value: password1
-              - name: MYSQL_DATABASE
-                vale: midb
-              - name: MYSQL_USER
-                value: miusuario
-              - name: MYSQL_PASSWORD
-                value: password2
-
+    replicas: 1
+    selector: 
+        matchLabels:
+            app: mariadb
+    template:
+          metadata:
+              labels: 
+                  app: mariadb
+          containers:
+              -   name: contenedor-mariadb
+                  image: mariadb:latest 
+                  ports:
+                    - containerPort: 3306
+                  env:
+                    - name: MYSQL_ROOT_PASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                          name: secretos-mariadb
+                          key: MYSQL_ROOT_PASSWORD
+                    - name: MYSQL_DATABASE
+                      valueFrom:
+                        configMapKeyRef:
+                          name: configuracion-mariadb
+                          key: MYSQL_DATABASE
+                    - name: MYSQL_USER
+                      valueFrom:
+                        secretKeyRef:
+                          name: secretos-mariadb
+                          key: MYSQL_USER
+                    - name: MYSQL_PASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                          name: secretos-mariadb
+                          key: MYSQL_PASSWORD
+                          
 
 
 

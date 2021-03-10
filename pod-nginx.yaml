@@ -309,3 +309,37 @@ spec:
 #  Como mucho, para cada pod, me puedes pedir 4 cpus
 
 #Pod: Pide 7CPUs garantizadas
+
+
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: deployment-mariadb  
+    labels: 
+        app: mariadb
+
+spec:
+    replicas: 1
+    selector:
+      matchLabels: 
+        app: mariadb
+    template:
+        metadata:
+            labels: 
+                app: mariadb
+        spec:
+          containers:
+              -   name: contenedor-fedora1
+                  image: fedora:latest
+                  command: ['sh', '-c', 'sleep 3600;']
+
+#Cuando hago un POD:
+#  Contenedores
+
+Cuando hago un Deployment:
+  Plantilla de un POD
+    Contenedores
+
+

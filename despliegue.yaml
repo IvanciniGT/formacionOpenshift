@@ -132,19 +132,8 @@ spec:
 # Volumen
 
 
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: peticion-volumen-tomcat
-spec:
-  resources:
-    requests:
-      storage: 50Gi  
-  accessModes:
-#    - ReadWriteMany
-    - ReadWriteOnce
 ---
-kind: Deployment
+kind: StatefulSet
 apiVersion: apps/v1
 metadata:
     name: deployment-tomcat  
@@ -160,13 +149,22 @@ spec:
               labels: 
                   app: tomcat
           spec: 
-            volumes:
-              - name: almacenamiento-tomcat
-                persistentVolumeClaim: 
-                  claimName: peticion-volumen-tomcat
+            volumesClaimTemplates:
+              - metadata:
+                  name: almacenamiento-tomcat
+                spec:
+                  resources:
+                    requests:
+                      storage: 50Gi  
+                  accessModes:
+                    - ReadWriteOnce
             containers:
               -   name: contenedor-tomcat
                   image: bitnami/tomcat:latest 
+                  resources:
+                    requests:
+                      cpu: "0.5"         
+                      memory: 0.5Gi
                   ports:
                     - containerPort: 8080
                   volumeMounts:

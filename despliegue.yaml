@@ -136,7 +136,7 @@ spec:
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
-    name: deployment-tomcat  
+    name: statefulset-tomcat  
     labels: 
         app: tomcat
 spec:
@@ -149,15 +149,6 @@ spec:
               labels: 
                   app: tomcat
           spec: 
-            volumesClaimTemplates:
-              - metadata:
-                  name: almacenamiento-tomcat
-                spec:
-                  resources:
-                    requests:
-                      storage: 50Gi  
-                  accessModes:
-                    - ReadWriteOnce
             containers:
               -   name: contenedor-tomcat
                   image: bitnami/tomcat:latest 
@@ -170,6 +161,15 @@ spec:
                   volumeMounts:
                     - name: almacenamiento-tomcat
                       mountPath: /carpeta
+    volumeClaimTemplates:
+      - metadata:
+          name: almacenamiento-tomcat
+        spec:
+          resources:
+            requests:
+              storage: 50Gi  
+          accessModes:
+            - ReadWriteOnce
 
 #    SECRET :
 #        fichero configuracion: Usuarios/Contraseñas

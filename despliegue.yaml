@@ -205,11 +205,50 @@ spec:
           resources:
             requests:
               storage: 50Gi  
-          storageClassName: discos-ssd-cloud
+          #storageClassName: discos-ssd-cloud
           accessModes:
             - ReadWriteOnce
 
 #    SECRET :
 #        fichero configuracion: Usuarios/Contraseñas
 #        tomcat-users.xml <<<- usuario/contraseña 
+---
 
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+spec:
+  selector:
+    app: mariadb
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat
+spec:
+  selector:
+    app: tomcat
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: webapptest
+spec:
+  host: webapptest-produccion.2886795288-80-host18nc.environments.katacoda.com
+  to:
+    kind: Service
+    name: tomcat
+    weight: 100
+  port:
+    targetPort: 8080
+  wildcardPolicy: None

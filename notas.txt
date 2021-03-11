@@ -1,0 +1,1418 @@
+Desarrollo / Sysadmin / Gestión
+Linux
+Docker
+Kubernetes
+Openshift
+
+Funcionalidades de una herramienta como Kubernetes:
+    Descubrimiento de servicios
+
+
+Openshift:
+    Orquestador de Contenedores
+        - Administrar diversos contenedores
+        - Decide donde crear los contenedores "a lo largo de un cluster"
+        - Que un grupo de contenedores trabajen de forma conjunta
+        - ...
+    Distrución de Kubernetes
+        - Orquestador de Contenedores, que ya permite trabajar en un cluster
+                Esta guay?? ESTA MUY GUAY !!!!
+                Quien hace Kubernetes? Google   
+                OPENSOURCE? SI
+                    Cualquiera puede contribuir? Más o menos...
+                        Existen limitaciones en función de la LICENCIA
+                            GPL, MIT, Apache
+                    Tengo acceso al código fuente, para verlo... quizás también para modificarlo y redistribuirlo
+                GRATUITO? SI
+        - Por qué la gente usa Openshift?
+            Si Kubernetes es GUAY!!!, Gratuito y Opensource? 
+                Interfaz de comunicación con Openshift
+                Más funcionalidad
+                    Integraciones?                    
+                Facilidad para ampliar el cluster
+                    Red-hat nos ofrece directamente una plantillas para automatizar la instalación
+                    y configuración de Openshift. (Ansible)
+                Más orienta al desarrollador de software
+    
+docker-compose:
+    - Orquestador de Contenedores... muy limitado en su funcionalidad
+-------------------------
+Contenedores:
+    - Entorno aislado donde ejecutar procesos en un SO.
+    - Para qué?
+        - Por si falla... Si hay algún problema solo afecta a ese entorno aislado
+        - Facilita la distribución de software:
+            - No depende del host. Por qué?
+                Dentro de un contenedor tengo:
+                    "TODO" LO QUE NECESITA MI PROCESO PARA EJECUTARSE:
+                        Librerias, dependencias,...
+                    A falta de un kernel de SO <<<< HOST
+                        Linux +  trucos rastreros:
+                            Windows: Si... ya que ... Subsistema de Linux 
+                            MacOS: Montar una maquina virtual Linux: Docker for MacOS
+                            Unix: 
+                Recrear un entorno productivo fácilmente
+            - Se puede actualizar independientemente
+        - Ese entorno aislado es más seguro
+        - Limitar los recursos disponibles para los procesos que se ejecutan dentro del contenedor.
+
+
+
+
+--------------
+Linux vs Unix
+
+
+UNIX: 
+Qué era UNIX? Un sistema operativo: PERFECT !!!!!
+Qué es UNIX? Un sistema operativo: RUINA !!!!!!
+    Especificación un Sistema Operativo (POSIX, SUS)
+
+    SO UNIX® Basados en el Kernel SO UNIX:
+        HP:  HP-UX
+        IBM: AIX
+        Oracle: Solaris 
+    
+    Gente por ahí "altruista" 
+        BSD <<<< 386BSD 
+            FreeDSB
+            MacOS <<<< Si se certificó
+        GNU <<<< Hicieron de todo menos un kernel
+            Linus Torwalds: Linux
+            
+        GNU + Linux >>> Distribuciones Linux
+        75%    25%
+        
+        Redhat Enterprise Linux
+            CentOS
+            Fedora
+            Oracle Linux
+        Suse
+        Debian
+            Ubuntu
+        
+        Android  = Kernel Linux + Librerias Google
+
+    Los contenedores se basan en librerias que existen a nivel de KERNEL DE LINUX
+                                    ^^^ 
+                                    Google
+----------------------
+Opensource y gratuito no es lo mismo?
+    REDHAT inc.
+        Redhat Enterprise Linux®
+            Es opensource? SI
+            Es gratuito?   NO  <<<< Pagamos una licencia? NO    
+                                    Pagamos una subscripción!
+                                        Actualizaciones automáticas
+                                        Soporte ...
+        Fedora
+            Es opensource? SI
+            Es gratuito?   SI
+
+Quien tiene más funcionalidad? Fedora o RHEL? 
+    La última funcionalidad la tengo disponible antes en: FEDORA (upstream de RHEL)
+
+CentOS? 
+    Clon de RHEL
+
+
+De quién es OpenShift? Redhat inc.
+    Es opensource? SI
+    Es gratuito?   Depende la versión
+        Openshift Container Platform: NO
+        Origin (OKD): Versión upstream de Openshift
+        Openshift Cloud: 
+            Un servicio que ofrece Redhat en su cloud para manejar OpenShift
+        AWS
+        Azure
+
+
+Que otros productos REDHAT?
+    - Ansible Project  <<<<  Ansible engine 
+    - Ansible Tower    <<<<  Ansible AWX
+    - Satelite
+    - JBOSS            <<<<  Wildfly
+
+¿Qué es un cloud?
+    Conjunto de Servicios que ofrece una empresa a través de INTERNET
+    Tipos:
+        IaaS ---> Servicios de infraestructura (Alquilar maquinas, redes, almacenamiento)
+        PaaS ---> Servicios de plataforma      (Tengo un IaaS + Software que puedo usar y administrar)
+                                                Software que no va orientado a usuario final
+        SaaS ---> Servicios de software         Software que SI va orientado a usuario final
+
+
+
+Interfaz de Comunicación:
+    - Docker:
+        cli             -> interprete de linea de comandos
+        docker-compose  ---> cli de docker
+    - Kubernetes:
+        cli                 -> kubectl
+        Interfaz gráfica    -> dashboard (Cutre, limitado... mal diseñado)
+    - Openshift:
+        cli                 -> oc
+        Interfaz gráfica    -> Interfaz gráfica WEB EXTRAORDINARIA
+            ---> ADMIN
+            ---> DESARROLLADORES
+
+
+
+DEVOPS:
+    AUTOMATIZACION de que? DE TODO!!!!
+        Integración Continua
+        Entrega continua
+        Despliegue continuo
+
+
+
+Clusters para instalar una aplicación
+    Ventajas:
+        - HA
+            Cumplir con un objetivo de Tiempo de Disponibilidad de la app
+            Redundancia. Como tengo las cosas al menos duplicadas, si una falla, hay otra en funcionamiento
+                Inconvenientes. Duplicación de recursos
+
+        - Escalabilidad    <<<< Adaptarse al volumen de uso de la app
+                                    Crecimientos
+                                    Decrecimientos
+
+
+
+100 > 110 >> 200 >>> 500 >>> 1000 >>> 10
+
+100 >>> 10000 >>> 200 >>>> 50000
+        BF                   CM
+
+Implicaciones:
+    Disponer de HW nuevo bajo demanda... en cuestión de 3 minutos:
+        10 maquinas más
+        Con SO instalado
+        Configuradas en mi RED
+        Con los programas que les hacen falta ya funcionando
+    Cloud... Alquilo maquinas IaaS
+        cloud publico: AWS, Azure
+        cloud privado on premisses: OpenStack (REDHAT)
+
+
+2 Maquinas fisicas donde tengo montado una app
+
+    Balanceador de carga (proxy) 
+        Lleva al usuario a la 1 o a la 2, segun interese.
+            Si la 1 está caida, a la 2
+            Si la 2 está caida, a la 1
+            Si las 2 funcionan, a Cualquiera
+            Si nunguna funciona. PROBLEMON !!!!! 
+
+    Maquina 1
+        App1  CPU 90%   Escalabilidad estoy guay!
+                        HA? RUINA
+
+    Maquina 1
+        App1  CPU 90%   
+    Maquina 2
+        App1  CPU 90%
+    
+        Escalabilidad estoy guay!
+        HA? RUINA
+
+Cluster Activo-Activo
+    Maquina 1
+        App1  CPU 90%   
+    Maquina 2
+        App1  CPU 90%
+    Maquina 3
+        App1  CPU 70%
+    Maquina 4
+        App1  CPU 0%
+    
+        Escalabilidad ... Estoy tirando recursos
+        HA? GUAY
+    
+
+Si baso la HA en redundancia.... eso cuesta pasta.... siempre tengo desperdicio de recursos
+
+Cluster Activo-Pasivo
+    Uno da servicio y el otro está de Backup
+    Ventajas / incovenientes ?
+        Sigo duplicando recursos
+        Ahorro en coste electrico / €€€€
+        Inconvenientes?
+            Tengo un tiempo en el que no estoy atendiendo a la Gente
+            Puedo mejorar ese tiempo de indisponibilidad?
+                Si... como, AUTOMATIZACION MONITORIZACION
+
+Kubernetes/Openshift
+    Redundancia Activo-Activo           <<<<< Escalabilidad
+        Balanceador:
+            Proc1    90%
+            Proc2    90%
+            Proc3    90%
+    Activo-Pasivo                       <<<<< HA
+        En el momento que uno de esos procesos se cae, levantan otro (Activo-Pasivo)
+        Con una diferencia frente a los metodos tradicionales:
+            El pasivo, no existe a priori... Se crea en el momento en que es necesario
+        El tiempo de indisponibilidad me lo cargo. No hay... como?
+            Balanceador de carga (COLA)
+        
+
+Contenedores: Forma de instalar y ejecutar aplicaciones
+        
+----- Instalación de openshift
+-> SO
+    Linux
+-> Docker
+    Gestor de contenedores con funcionalidades avanzadas
+        Funcionalidades Avanzadas
+            Crear imágenes de contenedores
+            Validar imágenes que descargo de un repo
+
+        Gestionar Contenedores     <<<<<     Containerd
+            Crear un contenedor
+            Operativa sobre un contenedor: Pararlo, arrancarlo, borrarlo
+            Crear redes virtuales
+            Controlar las imagenes que tengo
+        
+        Ejecutar un contenedor    <<<<<<     runc
+
+    Otras herramientas alternativas a Docker: Podman    >>>>>    containerd    >>>> runc
+    Kubernetes ha marcado docker como deprecated en sus instalaciones 
+        Prefiero que solo me montes containerd o crio
+
+-> Kubernetes
+-> Openshift
+
+Docker, Podman
+    Podman <<<<- Es la herramienta de gestión de contenedores que viene de serie con RHEL
+
+    Podman es más ligero que docker.
+    Docker tiene un demonio (servidor)    dockerd    + tiene un cli  : docker
+
+
+------------------------------------------
+Que es una instalación de Kubernetes:
+
+Programa que instalamos a nivel de cada máquina (SOBRE EL SO)
+    kubelet
+        Programa que habla con el gestor de contenedores que hay por debajo:
+            Docker, containerd, podman, crio
+        
+Contenedores de Kubernetes:
+    Este se monta en cada NODO
+        kubeproxy:  Montar una red virtual a nivel del cluster
+
+    Control-plane de Kubernetes
+        Kube-scheduller: Decide el nodo en que un pod(contenedor) se va a ejecutar
+        kube-controller: Gestion interna del Kubernetes:
+                                Monitorizar el estado de los nodos, pods,...
+        etcd:            Base de datos de Kubernetes
+        Api-server:      Ofrece un API REST para comunicación con el cluster
+        servidor-dns:    Identificación de servicios
+        ingress:         Acceso publico a determinados servicios del cluster
+
+        En los nodos que son los maestros de Kubernetes
+    
+    ^^^^   DE KUBERNETES
+
+    En Openshift... existen los ingress? Si   PERO NO SE USAN
+                    existen los router? Es un cocepto PROPIO DE OPENSHIFT
+
+
+
+
+
+
+Instalación docker:
+    Los contenedores donde se enganchan... a la red del host? No
+        Donde? A una red virtual que crea docker, dentro del equipo
+
+
+
+
+Proceso: Apache   -> Puerto -> 80
+    En que red lo levanta... En la que configure.
+
+
+Interfaces de RED:
+    loopback: localhost: 127.0.0.1
+    e____: Ethernet: 192.168.1.276
+    red_virtual_docker: 10.0.2.1
+                        172.10.0.27
+
+    Quien tiene acceso a la red virtual de docker: SOLO LA MAQUINA (HOST)
+
+    Si tengo un Apache y quiero que sea accesible desde fuera de mi máquina?
+        NAT: Redirección de puertos:
+            192.168.1.276:9876   =>>>>>    172.10.0.27:80
+
+Cuando trabajo con una herramienta como Kubernetes?
+    Me vale una red virtual a nivel de HOST??? NO
+    Vamos a tener una red virtual a nivel de CLUSTER
+
+
+
+------------
+Contenedor
+Pero en Kubernetes/Openshift no trabajamos con contenedores..... Trabajamos con PODs:
+    ¿Que es un POD?
+        Conjunto de contenedores que:
+            √ Comparten IP... y por tanto entre ellos se ven con LOCALHOST
+            √ Comparten máquina física... Tengo asegurado que ambos se ejecutan en la misma máquina
+            √ Se gestionan conjuntamente: Arranco, los creo, lo paro, lo borro, los escalo
+            - Comparten almacenamiento..... Algo así... Algo hay aqui.. pero no exacto que compartan almacenamiento.
+
+
+
+------------
+Servicio: 10.0.0.5:80  (balanceador_apache) >>>> 10.0.0.10:80  o  10.0.0.13:80
+                                ^^^^DNS
+Maquina 1  -  192.168.1.101
+    Apache: 10.0.0.10:80
+        Fichero de configuración de turno:
+            Que dirección pongo para el MYSQL.
+                Puedo poner: 10.0.0.11:3306
+                    NO.... porque tiene acceso?
+                        SIII, porque está en la red virtual de Kubernetes
+                Que pasa si el MySQL se mueve a la Maquina 3
+Maquina 2  -  192.168.1.102... PUF !!!
+x    MySQL:  10.0.0.11:3306 ...... REQUETEPUF !!!
+Maquina 3  -  192.168.1.103
+    MySQL:  10.0.0.12:3306
+    Apache: 10.0.0.13:80
+    App... que tiene que comunicarse con Apache
+        Que direccion le pongo? balanceador_apache:80
+
+
+Clientes: 192.168.1.200  <<< No tiene acceso a la red virtual de kubernetes:
+    NAT: Cuando ataque a CUALQUIERA de las maquinas del cluster en el puerto 30000 >>>
+            al servicio balanceador_apache en su puerto 80
+    Ingress: NGINX: Que hace de proxy con una IP publica y una IP privada (red virtual)
+
+Dentro de un Kubernetes:
+    Servicio: Puerta de entrada a una serie de procesos que se ejecutan en el cluster de Kubernetes
+                IP + PUERTO, que redirige a Otras IPs/Puertos, HACIENDO UNA COLA.
+              Los servicios tienen un NOMBRE: DNS
+------------------------------------
+Weblogic + Java              >>> Contenedor     >>>>>> POD
+Logstash o Filebeat o fluend >>> Contenedor
+        VV
+        VV
+    ELASTICSEARCH !!!! Repositorio para datos de monitorización: LOGS, Estadisticas de las maquinas
+    Kibana
+
+x APACHE, Nginx, ... Balanceado / Proxy
+    No me interesaría NUNCA: 
+        No escalan de la misma forma.
+x BBDD... Exactamente igual!
+
+---------------------------------------------
+Dentro de un Kubernetes/Openshift
+Un cluster no es sino un conjunto de OBJETOS:
+- Pods:               Conjuntos lógico de Contenedores... Ejecutan procesos que abren puertos
+- Servicios:          Proxy + cola + balanceador para acceso privado a los pods del cluster
+- Ingres/Routers(OS): Proxy para acceso público a los servicios del cluster
+- Deployments:        Pod que permite ESCALAMIENTO: 
+                        Cuantas copias quiero tener simultaneas de un POD
+- StatefulSet:        Pod que permite ESCALAMIENTO, pero... manteniendo cada pod un ID único
+- ReplicaSets:        Un objeto que asegura que tenemos en funcionamiento las copias 
+                        que haya pedido de un POD (vía un deployment o un statefulset)
+- Namespace:          Agrupacion de un conjunto de Objetos dentro de un cluster
+                        Para:
+                            - Limitar recursos
+                            - Aislar (seguridad)
+                            - Localizar servicios de un determado namespace
+- DaemonSet
+- RBAC
+- ResourceQuota
+- .....
+
+Todo objeto dentro de un cluster de Kubernetes va dentro de un Namespace SIEMPRE !!!!
+Si al crear un objeto no le asigno NAMESPACE, se asigna en automñatico al namespace: DEFAULT
+
+Que pasa en Openshift... esto es así???
+    Más o menos... En Openshift a pesar de que existe el tipo de objeto NAMESPACE... no se usa.
+    En su lugar se usa el objeto: PROJECT
+
+---- 
+Como definimos todos estos objetos dentro de Kubernetes / Openshift?
+    Mediante ficheros YAML ---> Los mandamos mediante una interfaz: cli, gráfica, API REST
+
+--------
+
+docker-compose.yaml
+
+version: "3"  # de que? Versión de la API De docker-compose
+
+services:   # Los contenedores   ----->    docker swarm ---- equivalente que hay en docker a kubernetes.
+                                                             muy pobre en funcionalidad   
+    contenedor1:
+        image: 
+        ports:
+        volumes:
+        env:
+        container_name:                                                         
+
+
+--------------------
+                    Cli
+Kubernetes:            kubectl apply -f FICHERO.yaml
+Openshift:             kubectl apply -f FICHERO.yaml  (lo mismo)
+                       oc apply -f FICHERO.yaml
+--------------------
+Cómo es un fichero YAML de Kubernetes / Openshift:
+
+kind: Pod (Namespace, Deployment)
+apiVersion: v1
+
+
+
+kind: Deployment (Namespace, Deployment)
+apiVersion: apps/v1
+
+
+Openshift, lo que me da son muchas más librerias, con muchos más tipos de objetos con los que trabajar.
+----------------------------------
+Creación de un Contenedor-> POD con el contenedor
+....
+Fichero pod-nginx.yaml
+---
+kind: Pod
+apiVersion: v1
+metadata:
+    name: pod-nginx  # Idenfificador del objeto en Kubernetes/Openshift
+    labels:
+        app: nginx   # Viene a ser algo identificativo del objeto, pero no es un IDENTIFICADOR UNICO
+
+spec:
+    containers:
+        -   name: contenedor-nginx
+            image: nginx:latest
+            # ports:
+            #- containerPort: 80   
+            # Si no pongo esta linea de arriba... Puedo acceder al contenedor? SI   
+            #                                     Puedo acceder al puerto?     PERFECTAMENTE !
+            # Entonces para que vales esta linea? Informativa para Kubernetes... 
+            # Para cuando creemos el servicio  
+
+        -   name: contenedor-fedora
+            image: fedora:latest
+            command: ['sh', ''-c', 'sleep 3600;']
+...
+
+Source2Image
+( Source de su app ---> Imagen de contenedor ) dentro de Openshift
+
+-------------
+Kubernetes: 
+    Node:   Una instancia en ejecución de Kubernetes, vinculada con el cluster.
+                máquina RUINA !!!!
+
+Openshift tenemos el concepto de Machine
+    Machine: Una máquina física o virtual a la que tengo acceso vía ssh.
+    Instalarle Openshift,arrancarlo y unirla al cluster:
+        Convertirla en un Nodo
+    Pools de machines... con autoescalado.
+        Plantilla: Quiero una maquina de 8Gbs de RAM con 4VCPU y 183 Gb de almacenamiento
+        ^^^^^^^^^
+        MachineConfigs
+        En base a las estadisticas de mi cluster... iré creando o destruyendo de esas máquinas
+        en un cloud:    Creame 5... 
+                        Borra 3...
+
+Machine ---- Pod
+
+
+Que diferencia a un Nodo de una Máquina?
+    Vinculada con el cluster
+    Que tiene 
+
+
+-------------
+Creacion de un POD
+    -> Mediante fichero YAML
+    -> Asistentes:
+        Crear POD
+        Crear Deployment: Escalar el POD
+        Crear servicio
+        Crear ROUTE
+
+
+------------
+si yo creo un pod mediante YAML... Que hay dentro de Openshift?
+    - POD
+
+Algun servicio puede acceder al POD? NO
+    Que necesito hacer ahora? Service
+
+Algun usuario externo puede acceder al POD/services? NO
+    Crear un route
+
+
+----------------------
+Cluster tiene configurado para los POD IPs en el rango 192.168.0.0/16
+POD:    - IP: 192.168.1.100
+    - name: contenedor-nginx
+
+POD:     - IP: 192.168.1.101
+    - name: contenedor-fedora
+        curl     192.168.1.100:80 >>>>> NGINX: SI
+        curl     localhost:80     >>>>> NO
+        curl service-nginx:80     >>>>> SI
+
+SERVICE: service-nginx
+    IP: 192.168.1.100:8080   >>>>  Todos los contenedores que tenga como etiqueta Nombre de la aplicacion
+                                    a su puerto "Puerto del contenedor"
+                                  192.168.1.100:80
+
+        Cola + Balanceador
+
+        Proxy: kubeproxy
+                IPTABLES --- por defecto
+                  >>>  NetFilter... Procesar los paquetes de red
+
+Firewall: Rhel
+    Trabajabamos sobre IPTABLES (HOY EN DIA PROHIBIDO)
+    Firewalld
+
+
+ROUTE, INGRESS : Quien está detras: nginx
+
+SERVICE: 
+    Nombre del servicio
+    Puerto del contenedor
+    Nombre de la aplicacion
+    (Tipo de servicio)
+    Puerto del servicio
+    IP al servicio
+
+
+
+
+--------------------------------------------------------
+Openshift
+--------------------------------------------------------
+Orquestador de contenedores
+Basado en Kubernetes
+Mejoras, adiciones sobre Kubernetes:
+ - Creación de imágenes de contenedores
+ - Elasticidad del cluster: Escalados de máquinas
+ - Operadores
+ - Interfaz gráfica mejorada
+ - Funcionalidades para DESARROLLADORES
+ - Nuevos tipos de objetos
+
+Licencia en Openshift:
+    Opensource? Si
+    Gratuito?   No (bueno...)
+Versiones:
+    OpenShift Container Platform (Es de pago... mediate subscriptión)
+    El proyecto upstream de Openshift: Origin (OKD)
+
+----------------
+Con que objetos trabajamos en Kubernetes:
+
+Namespace: 
+    Agrupación lógica de objetos dentro del cluster
+    Realmente en Openshift tienen otro nombre: Project
+
+    Pod: Conjunto de contenedores:
+        - Tienen la misma IP
+        - Que corren en la misma máquina
+        - Que se administran conjuntamente: Escalabilidad, arranque, parada
+    Definir Escalado de Pods:
+        Deployment
+        StatefulSet = Deployment + mantener un id por instancia de pod
+    Gestión del escalado:
+        ReplicaSet: Asegura el escalado de un pod
+    
+    Service:
+        Visibilidad de puerto de uno o varios pods interna en el cluster
+        Tipos de servicios:
+            - ClusterIP: Básico. Permite comunicación y exposición de un servicio dentro del cluster
+            - LoadBalancer: Clouds viene de serie: Balanceador de carga ofrecido por un cloud.
+            - NodePort = ClusterIP + Se expone en todos los NODOS del cluster, en su IP pública
+        Esto se implementa a bajo nivel mediante un reglas procesadas por NetFilter (Iptables, ICMP)
+
+    Ingress: Exponer un servicio al público.
+        Esto se implementa a bajo nivel mediante un Proxy (nginx)
+        Los ingress dijimos que en Openshift no se usan mucho.
+        En su lugar se usan? Route
+        Ruta pública:
+            192.168.17.43:80/carniceria
+            192.168.17.43:80/pescaderia
+            192.168.17.43:80/oracle
+    
+    ConfigMaps
+    Secrets
+    Volumenes <<<<
+
+----------------
+Clientes a hacer compras = Clientes que hacen peticiones a servicios
+Compras: Información que gestionan las apps del cluster
+
+Supermercado Manresa : Namespace  = Clusters
+Supermercado Cornella : Namespace = Cluster
+
+Supermercado: Carrefour   --- Cluster Kubernetes/Openshift
+    Carnicería  ---  Servicio
+        Sacar número  --->  Cola
+        El número 17  ----> Se asigna a un determinado carnicero (el que esté libre)
+                            Balanceo de carga
+        El número de carnicero definido inicialmente en el deplyment, va a cambiar
+            en el tiempo.... Según la cola que se esté generando.
+            Quiero a alguien que vaya monitorizando estadísticas (cola) y 
+                cambie el número de carniceros que tiene que haber --- HorizontalPodAutoscaler
+        Ha de haber alguien que se asegure que en todo momento hay 5 carniceros, 
+            porque así se ha definido    -   ReplicaSet
+        Deployment Carniceros --- Competencias/habilidades (Plantilla de Pod: Imagen de contenedor)
+            Quiero 5 carniceros
+            Carnicero 1 >>> Contenedor - Pod
+            Carnicero 2 >>> Contenedor - Pod
+            ...
+            Carnicero N <<<<< Está limitado al número de básculas/tablas de cortar carne/puestos de trabajo
+                                VVVV
+                            Nodos del cluster
+    Pescadería  ---  Servicio
+        Pescadero 1 >>> Contenedor - Pod
+            Tabla de cortar: Volumen de almancenamiento No persistente / Temporal
+        Pescadero 2 >>> Contenedor - Pod
+        Pescadero N <<<<< Está limitado al número de básculas/tablas de cortar carne/puestos de trabajo
+                                VVVV
+                            Nodos del cluster
+    Charcutería  ---  Servicio
+        Charcutero 1 >>> Contenedor - Pod
+        Charcutero 2 >>> Contenedor - Pod
+        Charcutero 3 >>> Contenedor - Pod
+
+    Almacen
+        Supervisor y Pareja de Mozos de almacen - 3 contenedores - Pod
+
+    Cajas de pago
+        Conjunto de Cajeros ---- StatefulSet
+            Cajero: Contenedor/Pod
+            Cajero se pone a trabajar: Tiene que meter un código en su caja que le identifique
+                Clave que usa el cajero, que es una configuración que necesita para comenzar a trabajar:
+                    Secret
+            El cajero tiene en la caja, una bandejita donde pone la pasta €€€
+                Bandeja: Volumen de almacenamiento Persistente
+    Aseo ---> Servicio
+        Limpiar los aseos : Limpiador de aseos - Contenedor - (Demonio) - Job
+
+    Los clientes entran al supermercado por la puerta          - Ingress
+        Carteles / Señales                                          Contexto/Ruta
+            ----> Me guian hacia un Servicio
+    Los proveedores entran al supermercado por otra puerta     - Route
+----------------
+
+Servicio:
+    Acceder a una página web
+    Hacer una query a una BBDD
+
+----------------
+Deployment: Conjunto de Pods iguales entre si... clones... basados en una plantilla
+    nombre: carnicero
+    Plantilla de Pod
+    Quiero N Pods
+
+ReplicaSet: Garante del número de replicas
+carnicero-1     carnicero-ASH27
+carnicero-2     carnicero-DU278
+carnicero-3     carnicero-19DJ2   XXXX
+                carnicero-189DS
+
+-----------------------------------------------------
+Volumenes en Docker
+    - Ficheros donde se guarda configuración
+    - Bases de datos
+    - Rutas que quieres sacar fuera por si reinstalas todo
+
+
+Que viene en una imagen de contenedor?
+    - Configuración del contenedor
+        Puertos
+        Volumenes
+        Variables de entorno
+    - FileSystem <<<<< una carpeta ZIPeada
+        - Librerias
+        - Ejecutables
+        - Configuraciones
+        - Recursos
+
+
+/home/ubuntu/descomrimida_imagen_nginx <<<< host
+                /bin
+                /etc
+                /lib
+                /tmp
+                /sbin
+                /var
+                /home
+
+Al generar un contenedor basado en una imagen?
+    FileSystem
+        Capas de un sistema de archivos
+            Capa base que es la de la imagen (la del zip)
+                ---> Se replica a nivel de contenedor? la comparten entre todos 
+                     los contenedores que yo creara basados en esa imagen
+                Cuando se descomprime se guarda también en el HDD del host
+            Cualquier archivo que cambie en la capa base
+                Es guardado en un directorio independiente para el contenedor
+                Esta es una capa que se superpone
+                Donde se guarda esta capa nueva ????
+                    TIENE TOTAL PERSISTENCIA en mi disco duro del ordendor host 
+                    donde ejecuto el contenedor
+                Si paro el contenedor y lo arranco mañana, esos archivos modificados están?
+                    SI, sin problema
+                conozco la ruta de la carpeta en el host? docker inspect CONTAINER_NAME
+                La característica es que al borrar el contenedor, esa carpeta se borra
+
+    Borra contenedores es algo habitual?  MUY HABITUAL
+        Nginx --- página web
+    
+    Escenarios:
+        Cada vez que hay un problema en el contenedor
+        Actualizo nginx: Borro contenedor y creo uno nuevo con una versión de imagen actualizada
+        Lo muevo en el cluster: Borro y creo uno nuevo
+        Escalados
+    
+    Hay contenedores que requieren que los datos pervivan más que ellos mismos
+
+    MySQL
+        ---->   Va a generar datos ----> Fichero
+        Mientras no borre el contenedor, los datos están a salvo.
+        Cuando borre el contenedor, pierdo los datos <<<<<
+    
+    MySQL 5.1.2    >>>>    MySQL 5.1.3
+    MySQL en Maq1  >>>>    Maq2
+    Borrado y recreación del contenedor:
+        Quiero que los ficheros de datos se mantengan
+
+
+    Volumen Contenedores:
+        Capa de FS de la imagen
+        Capa de FS de Contenedor
+        Capa del volumen
+
+    
+
+
+Docker:
+    Contenedor MySQL
+        Volumen para la carpeta de los datos BBDD
+    Recrear el contenedor con una nueva sobre la que aplico el mismo volumen
+
+Que problema nos encontramos en un Kubernes/Openshift con esta politica?
+    Si la carpeta del volumen se crea en el propio host.... 
+    que pasa si muevo el contenedor a otro host (borrarlo y recrearlo en otra maquina)
+
+Solución:
+    Volumenes compartidos:
+        Volumenes que no se almacenen en el host, sino que tenga acceso a ellos mediante otros medios
+            - NFS, SAMBA, CIFS, Cloud: AWS, Azure, GCloud, IBM Cloud, ... : RED
+            - FibreChannel Cabina 
+            - CEPH
+
+Cuando trabajo con un Kubernetes/Openshift necesito trabajar con 
+    volumenes externos que monto a nivel de host cuando quiero persistencia al borrar y 
+    recrear contenedores?
+
+Esos ocurre siempre? No.
+    Ejemplos:
+        Logs? Depende ---> ElasticSearch
+        Archivos temporales
+POD:
+    WAS
+        app.war
+            ---> uploadDeFichero.jsp
+                Temporalmente guarda el archivo subido a una carpeta temporal <<< NO MONTO VOLUMEN
+                        ----> Documentum/Alfreso
+            ----> app.log                             <<< MONTO UN VOLUMEN LOCAL
+        ---> server.log / server.out / access.log
+    Filebeat, Fluend (Logstash, Kafka) ---> ES
+            ----> app.log                             <<< MONTO UN VOLUMEN LOCAL
+        ---> server.log / server.out / access.log
+
+POD:
+    MySQL
+        Base de datos---> Ficheros en un FS    >>>> Montar en un volumen externo
+
+
+------------------
+
+PersistentVolume            El volumen físico, con su configuración
+    Azure            <<< Administrador del cluster de Openshift
+
+PersistentVolumeClaim       La petición de un volumen que se hace al crear un pod
+    Para un POD      <<< Desarrollador
+
+------------------
+Cluster OS
+    Maquina n
+        MariaDB_Pod
+            MariaDB_Container
+                ---> Necesita un emplazamiento donde almacenar los ficheros de la BBDD
+                    >>>> Necesito un VOLUMEN EXTERNO para guardar los ficheros de la BBDD
+                            Que sea grandecito... 
+                            Que sea rapidito...
+
+Oh, me piden un volumen para la BBDD,... Donde lo pongo?
+    On premisses?
+        Cabina?
+        NFS?
+    Cloud?
+
+    El volumen que me piden para MariaDB lo pongo en el servidor_NFS_1
+
+
+El admisnitrador del cluster tiene precreados una serie de VOLUMENES 
+                NOMBRE  Tamaño    Caracteristicas
+                VOL1     10Gb       rapidito
+                VOL2     20Gb       lentito
+                VOL3     10Gb       redundante y rapidito
+                VOL4    100Gb       rapidito
+                VOL5     40Gb       redundante
+
+Despues entra el desarrollador: Hace una petición de volumen, indicando unas características.
+    PETICION_PARA_MARIADB: Quiero 50Gbs rapidito
+
+Openshift (Kubernetes) toman decisiones:
+                VOL4    100Gb        rapidito   .... Este cumple, con creces!!
+                        Quiero 50Gbs rapidito
+Openshift asigna ese volumen a la petición de volumen del desarrollador
+
+    PVC - PV       PETICION_PARA_MARIADB <> VOL4
+
+El desarrollador cuando crea el contenedor del MariaDB, dice... el volumen que me hace falta,
+lo he pedido bajo en nombre: PETICION_PARA_MARIADB
+
+    Openshift vincula CONTENEDOR_MARIADB <> VOL4
+
+Que le da OS al desarrollador para su MariaDB?
+        Le da los 50Gbs que pidió, o le da los 100Gbs? Le enchufa los 100Gb
+
+----------------------------------
+El volumen en ultima instancia no se asocia a un contenedor.... sino a un POD
+Pero además, el desarrollador, monta los volumenes asociados al POD en los contenedores 
+    que le interese de ese POD
+
+
+100Gi --> Gibibites = 100x1024x1024 bytes
+100Gb --> Gigabytes = 100x1000x1000 bytes
+
+
+
+
+
+
+
+
+
+
+Cual sería el procedimiento?
+    1º Crear el PV >>> Administrador (ser humano   ....   usuario)
+    2º Crear el PVC >> Desarrollador
+    3º Creo el POD con un volument asociado al PVC
+
+Estática de trabajar con los volumenes
+---------------------------------------
+
+Provisioner - Provisionador
+    Un provisionador es un nuevo tipo de Objeto
+        --->> Generar volumenes permanentes (PV) atendiendo en tiempo real a las peticiones de 
+                los desarrolladores: PVC
+
+Cual sería el procedimiento?
+    0º Crear un serviceAccount, Con un Rol si no existe y una asignación de ROL al serviceAccount
+    1º Crear el provisioner/storageClass >>> Administrador
+    2º Crear el PVC >> Desarrollador
+        Quiero un volulen de tal tamaño, para mi (o mis compañeros) y de tipo: StorageClass
+                                                                                ^^^ Admin
+    2.5º Openshift llama al provisionador para pedirle que genere el volumen
+    3º Creo el POD con un volumen asociado al PVC
+
+Quien genera el volumen? 
+    provisionador (programa   ...   serviceAccount)
+    Que más necesito?
+        Asignar al serviceAccount un rol con permisos para?
+            - Crear PV, Consultar PVCs
+
+
+c1: WAS
+c2: Filebeat (leer los ficheros de log del WAS)
+
+Host: Acceder a los ficheros del c1? SI
+Host: Acceder a los ficheros del c2? SI
+c1: Acceder a los ficheros del c2?   NO
+
+Necesito una carpeta a nivel del HOST que monte sobre los 2 contenedores
+    emptyDir: {}
+
+
+hostPath=emptyDir pero que conozco la ruta y que no se borra con los contenedores
+    DockerInDocker
+
+    Host                    Cont1         Cont1.a
+    Ubuntu                  <-
+
+    /var/lib/docker    ->>  /var/lib/docker
+
+Jenkins
+
+
+
+--------------------
+Ventajas de uso de una herramienta como Kubernetes/Openshift
+
+
+OPERACION:
+- Alta disponibilidad
+- Escalabilidad
+- Seguridad
+- Aislamiento (Contenedores)
+
+- Facilidad para el despliegue de aplicaciones
+- Exponer los Servicios de la app
+- Facilidad para dessarrolladores
+- Facilidad para distribuir software
+- Crear imágenes dinámicamente (Openshift)
+---------------------
+Trabajamos en varios entornos:
+    A nivel de un cliente:
+        Desarrollo, Integración, Producción
+    Podemos tener varios clientes
+----------------------
+Hasta ahora hemos estado trabajando a nivel de POD < Imagen
+
+Deployment vs DeploymentConfig:
+    - Deployment       >>> Selectores enriquecidos a la hora de definir el template 
+    - DeploymentConfig >>> Un selector básico a la hora de definir el template
+
+
+Montar un despliegue de una app:
+Cosas de las que parto:
+    - Imagen base
+Cosas tengo que montar a posteriori para implementar aquello:
+    - Deployment o StatefulSet (o DeploymentConfig): Me permiten crear conjuntos de PODS desde una plantilla
+        Deployment:  Los pods NO tienen personalidad propia
+        StatefulSet: Los pods SI tienen personalidad propia
+        ---> ReplicaSet <<< Asegurar que tengo las replicas que quiero
+    - Servicio: Acceder a la app (exponerla, publicarla) dentro de un cluster
+    - Ingress / Route (OS) para exponer publicamente algunos servicios
+    - CronJob
+    - DaemonSet
+    - ServiceAccount + Roles + Asignaciones de roles
+
+---------------------------------------
+Pod ---> podIvan
+    Que pasa si se cae? 
+        Que levanta otro? Dependiendo del restart policy , k8S/OS intentará reiniciarlo
+        K8S/OS va a recrear el POD? No nunca
+---------------------------------------
+MariaDB/MySQL, etc... No voy a montar un cluster
+    MariaDBPod  <<<< Deployment Capacidad de 1 <<<< ReplicaSet
+---------------------------------------
+Deployment: Capacidad n variable
+    Cluster WAS | Apache | Logstash | Kafka
+
+    Apache1 me vale... pero si tengo mucho tráfico, necesito más
+        Apache2
+        Apache3
+        Apache4
+
+    A todos los apaches les monto un volumen compartido con el contenido estático
+
+    Los apaches son todos iguales... hacen todos lo mismo 
+-----------------------------------------
+StatefulSet
+    ElasticSearch | Hadoop
+        Nodo1   Dato1         ---- HDD1      Volumen1 
+        Nodo2   Dato2         ---- HDD2      Volumen2
+        X Nodo3   Dato1 Dato2                  Volumen3
+        Nodo4
+
+        Nodo3' --->  Volumen3 ... misma configuración que tenia el nodo3
+
+
+
+
+------------
+POD? los usamos mucho? NO ---- Deployment, StatefulSet
+JOB: (Un script) Un POD que acaba ---- Los voy a usar mucho ? NO
+    CRONJOB ~ Deployment/ReplicaSet
+        Un proceso que me va a levantar un JOB cuando toque     * * * * *
+DAEMONSET: Como un deployment, pero que se va a asegurar que cada nodo del cluster
+            tiene un pod de un tipo (basado en una plantilla) en ejecución
+
+---------------
+MariaDB
+    Nombre de la Base de datos? Si o No
+    Nombre de usuario? Si o No
+    Contraseña acceso? NO !!!!!!!
+
+Como esos datos a un contenedor en su inicio?
+Como configuro un contenedor?
+    - Con variables de Entorno
+    - Mediante ficheros que inyecto a través de volumenes
+
+
+ConfigMaps  ---> Definir configuraciones: 
+                    Ficheros o variables
+                    Parejas clave: Nombre del configMap: valor: Parejas clave valor
+Secrets     =   ConfigMap
+    Los secrets se almacenan Encriptados
+
+---------
+Secretos MariaDB
+                                    SEGURIDAD                         AUTOMATIZAR      
+1- Secret desde la consola WEB        √√√                                XXX
+2- Secret en un fichero YAML          Depende de donde tenga el YAML     √√√
+3- Crear el secret desde la terminal  Depende de donde tenga el script   √√√
+        vía un script
+
+2ª II
+3ª II               √√√√√ ???
+Por qué?
+    Flexibilidad
+    El comando no tengo porque tenerlo guardado en ningun sitio.
+        Lo voy a generar sobre la marcha!
+
+Jenkins
+    Almacen de contraseñas ENCRIPTADO, SECURIZADO
+    Ejecuta: 
+        oc create secret generic PASSWORD_MARIADB --from-literal=MYSQL_PASSWORD=${CLAVE_QUE_TIENES_GUARDADA}
+        oc create secret generic PASSWORD_MARIADB --from-file=path_fichero
+-------------------
+
+1º Van a leer una app para cargarla
+    Necesitan compartir datos? ---> Tengo que montar un Volumen Compartido para todos PV <--- PVC
+                                            Deployment  
+                                            StatefulSet
+
+    Necesitan tener datos individuales persistentes? No  ---> Deployment
+                                                     Si ----> StatefulSet
+
+
+Tomcat 1
+
+Tomcat 2
+
+-------------------
+
+dominio ---> carpeta con ficheros de configuracion      config security      
+
+WAS1
+
+WAS2
+
+
+------
+
+DOMINIO WEBLOGIC - carpeta que se replica en todos los nodos del cluster
+    config
+    bin
+
+    servers
+        server1
+            apps
+            logs
+        server2
+            apps
+            log
+        server3
+            log
+
+HA
+Servidor 1 - Maquina 1
+    AdminServer   PUF !!!!   <<<<< ADMIN_VOLUMEN
+    app1
+Servidor 2 - Maquina 2
+    app1
+    AdminServer (apagadito) ----> Carpeta de dominio con la que va a trabajar tiene que ser 
+        <<<< ADMIN_VOLUMEN
+
+------------  Quiero tener en principio 3 garantizados... quizas más si la cosa se pone dura
+Maquina 3 - Servidor 3
+    app2
+Maquina 4 - Servidor 4
+    app2
+Maquina 5 - Servidor 5
+    app2
+
+Maquina 6 <<<<<< Dominio
+    Copiar directorio compartido 
+    NodeManager -< tengo que registrarlo en el dominio (enrollment) ---> Ficheros de configuracion 
+    servidor    app1
+                app2
+------------
+
+Volumen NFS ADMIN_VOLUMEN
+
+ADMIN_SERVER Que sería en Kubernetes/Openshift?
+    Pod?  X No me da la HA
+    Deployment?             √√√√√√√
+        X replicas 1 <<<<< Volumen - PVC1038264 -PV1029487
+        replicas 2 <<<<< Volumen - PVC1038264 -PV1029487
+    StatefulSet?   
+---
+
+Servidores de la app2 Que sería en Kubernetes/Openshift?
+    Pod?  X No me da replicas
+    Deployment?     III
+    StatefulSet?    II
+
+    Depende?
+        Si tengo quen montar volumenes?
+            Para qué son esos volumenes?
+                Para compartir ficheros de log con un filebeat ---> ES
+                Como sería el volumen?
+                    Depende
+                        Si el filebeat va a estar ejecutandose en el mimo nodo que el weblogic?
+                            hostPath? Podría... pero no
+                            empty-dir <<<< puede trabajar sobre RAM
+                        Tenga el filebeat en otro sitio
+                            Necesito volumenen compartido 
+                                Tiene que ser 1 por instancia? 
+                                    Puedo tener 1 para todos
+                                        -> Deployment
+                                    Puedo tener 1 para cada uno
+                                        -> Statefulset
+        Si utilizan un volumen () cada uno?  
+            SI -> statefulset
+            NO -> Deployment
+
+
+#Pod/Deployment
+#---------------
+#Pod <--> PVC  <-->  PV (retain|delete)
+#Al borra el pod, no se borra el PVC asociado
+
+#StatefulSet
+#---------------
+#Pod ---> PVC  <-->  PV (retain|delete)
+#Al borra el pod, se borra el pvc? NO 
+#Por que el pod se levantaría en otro sitio
+#Que pasa si escalo? Hacia abajo VVV
+
+# Servicios
+# Route ---> Tomcat
+
+
+# MySQL <<< MariaDB
+# Tomcat (2 replicas)
+
+Repositorio git
+  $ git clone https://github.com/IvanciniGT/webappTest
+App Desarrollada en JAVA - Codigo fuente  (ficheros muchos .java, .jsp, ...) CONFIGURADO VIA MAVEN
+  $ mvn package 
+
+Este JOB no va a estar continuamente en ejecución... Solo se ejecuta para generar el WAR
+JOB que tenga dentro?  ---> .war   El .war lo genero en un volumen que voy a enchufarle al tomcat
+  - Codigo fuente (git)
+  - Maven
+
+
+
+
+    /target/*.war   -> /app
+Compilado / Empaquetado de la aplicación   ---> WAR ----> WL, WAS, tomcat, JBOSS
+
+  Sii el archivo estuviera en un volumen... > Volumen al tomcat
+
+
+
+1º Generar el WAR CONTENEDOR 1 que se ejecutar para preparar lo necesario para otro contenedor: INIT CONTAINER
+2º Arrancar tomcat
+
+
+POD:
+    2 contenedores:
+        - C A
+        - C B
+Al levantar el POD en este caso, que contenedor se ejecuta primero? NPI
+    Además, esos contenedores OS va a monitorizar que estén continuamente en ejecución.
+        Si un no está en ejecución. OS nos informa de un problema !!!
+
+POD:
+    initContainer:
+        - C A1
+        - C A2
+        - C A3
+    contenedores:
+        - C B
+        - C C
+
+En este caso, siempre se ejecuta primero A1, A2, A3 y luego (B o C... no se el orden).
+OS no contabiliza como error que A1, A2... mis initContainer acaben... De hecho si no acaban, tenemos un problema !
+
+
+2 Pods ------> 17 pods
+
+
+
+empty-dir
+    Cuando se ejecuta el initContainer? <<<< Template del pod
+        Antes de los Contenedores DE CADA POD
+    PERFECTO... PERO.... Cuantas veces se va a descargar el codigo y empaquetarlo? 
+        Cada vez que se levante un pod
+
+pvc --> pv
+    Cuando se ejecuta el initContainer? <<<< Template del pod
+        Antes de los Contenedores DE CADA POD
+    Todos tiran de la misma carpeta
+        Cuantas veces quiero generar el WAR? Una
+
+------------------------------------
+Vamos a tener un cluster con un montón de nodos:
+
+1º Que todas las máquinas no sean iguales
+    No hace falta... pero interesa?
+        Tipos de nodos A, B, C
+
+Despliegues de Pods (Pod, Deployment, Stefulset) Jobs, CronJobs
+
+2º No todas las maquinas las voy a dedicar a lo mismo, aun siendo iguales
+Maquina A
+    App1 Produccion
+    App2 Test         <<<< Pruebas de carga
+    App2 Desarrollo
+
+Los entornos los controlamos a nivel de Proyecto
+
+Cluster Lógico ElasticSearch
+    Nodos -> Pods
+        Maestros
+        Data
+        Ingest              CPU
+        Coordinacion        RAM
+        Machine Learning
+
+
+
+POD <<<<<<< Desarrollador
+    Puedo definir donde quiero que vaya... al menos dar una reglas
+        Asociarlo a maquinas concretas              MAQUINA A
+        Dar instrucciones sobre tipos de maquinas   TIPO A
+        Montalo donde no haya otros pods como él
+        Intenta montarlo donde haya otros pods como un que cuento aquí
+        
+        Estrat. que se refieren o limitan a nivel de NODO
+            nodeSelector:
+                label: valor
+                                          a nivel de POD
+
+        ssd ???
+
+
+Nodo:  <<<<<<< Administrador
+    Este no no admite determinados tipos de apliaciones
+
+Al utilizar afinidades a máquinas basadas en labels:
+    A las maquinas hay que ponerle los labels:
+    
+    $ oc label node maquina17 nodo_con_almacenamiento=ssd
+
+
+Taints / tolerations
+
+A un nodo le puedo poner un TAINT 
+Clave/Value/Efecto
+                NoSchedule
+                PreferNoSchedule
+                NoExecute
+
+Operator: Equal    Exists
+
+$ oc adm taint node maquina17 clave=valor:efecto
+al nodo maestro pnle el taint: ejecutarWebServices=NO:NoSchedule
+
+Ningun pod a partir de este momento se meteria en ese nodo
+
+pod:
+    tolerantions:
+        - key: ejecutarWebServices
+          value: NO
+          effect: NoSchedule
+          opertor: "Exists"
+
+
+label: Solo etiqueta, pero no evita por defecto que se monte alli nada
+taint: Etiqueta,      pero    evita por defecto que se monte alli nada
+
+
+El cluster internamente usa mucho los taints:
+    Nuestro nodo, está sin recursos ---> Ponerle un taint
+
+Nodo                                        Pod
+Label  (no bloquea nodo)                    Selectors     (requiero tener la / no tener la etiqueta )
+Taint  (si bloquea)                         Toleraciones  (admito el taint)
+
+Label:     Selector: TengoTarjetaGrafica: SI
+    Pero lo que no limito es que otros pods no entren en el nodo
+Taint: soloGrafica:YES:NoSchedule
+    Al por: Toleration: soloGrafica:YES:NoSchedule : EXISTS
+        La app que quiere la grafica si va ir a ese nodo, pero nadie mas
+
+Labels y Taints
+
+Cluster:
+    maquina1
+        pod1
+    maquina2
+        pod2
+    maquina3
+        pod1'
+        pod2'
+
+Quiero hacer una actualización de hardware en la maquina 3.
+Le voy a meter una nueva tarjeta de red.
+    TAINT maquina3: NoExecute
+    UNTAINT
+
+Schedulerer -> donde se puede meter un POD
+Execute    -->
+
+
+
+zonas: cataluña, andulucia, madrid
+
+Maquina1
+    nombre: maquina1
+    zona: cataluña
+    pod:
+        bbdd: mariadb
+Maquina2
+    nombre: maquina2
+    zona: cataluña
+    pod:
+        bbdd: postgreSQL
+maquina3
+    nombre: maquina3
+    zona: andalucia
+    pod:
+        bbdd: postgreSQL
+maquina4
+    nombre: maquina4
+    zona: madrid
+    pod:
+        bbdd: mariadb
+--------
+Tomar todos los valores distintos de la topologyKey:
+Miro si en los nodos que comparten un valor de topologyKey, hay pods que cumplen...
+--------
+podAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+                - key: bbdd
+                values:
+                    - mariadb
+                operator: In
+    topologyKey: "kubernetes.io/hostname"
+
+        Es elegible Maquina1? SI        
+        Es elegible Maquina2? NO
+
+    topologyKey: "zona"
+
+        Es elegible Maquina1? SI        
+        Es elegible Maquina2? SI

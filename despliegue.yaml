@@ -133,6 +133,21 @@ spec:
 
 
 ---
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+    name: empaquetador-app  
+    labels:
+        app: mariadb   
+data:
+  empaquetar.sh: |
+      #!/bin/bash
+      git clone https://github.com/IvanciniGT/webappTest
+      cd webappTest/
+      mvn package
+      cp /webappTest/target/webapp-test.war /resultado
+---
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
@@ -149,6 +164,26 @@ spec:
               labels: 
                   app: tomcat
           spec: 
+            volumes:
+              - name: empaquetador
+                configMap:
+                  name: empaquetador-app
+              - name: aplicacion
+                empty-dir: {}
+            initContainers:
+              -   name: preparar-aplicacion
+                  image: maven:3.3-jdk-8 
+                  resources:
+                    requests:
+                      cpu: "0.5"         
+                      memory: 0.5Gi
+                  command: 
+                    - . /empaquetar/empaquetar.sh
+                  volumeMounts:
+                    - name: empaquetador
+                      mountPath: /empaquetar
+                    - name: aplicacion
+                      mountPath: /resultado
             containers:
               -   name: contenedor-tomcat
                   image: bitnami/tomcat:latest 
@@ -161,6 +196,8 @@ spec:
                   volumeMounts:
                     - name: almacenamiento-tomcat
                       mountPath: /carpeta
+                    - name: aplicacion
+                      mountPath: /app
     volumeClaimTemplates:
       - metadata:
           name: almacenamiento-tomcat
@@ -176,14 +213,3 @@ spec:
 #        fichero configuracion: Usuarios/Contraseñas
 #        tomcat-users.xml <<<- usuario/contraseña 
 
-#Pod/Deployment
-#---------------
-#Pod <--> PVC  <-->  PV (retain|delete)
-#Al borra el pod, no se borra el PVC asociado
-
-#StatefulSet
-#---------------
-#Pod ---> PVC  <-->  PV (retain|delete)
-#Al borra el pod, se borra el pvc? NO 
-#Por que el pod se levantaría en otro sitio
-#Que pasa si escalo? Hacia abajo VVV

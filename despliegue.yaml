@@ -168,6 +168,7 @@ spec:
           resources:
             requests:
               storage: 50Gi  
+          storageClassName: discos-ssd-cloud
           accessModes:
             - ReadWriteOnce
 
@@ -175,3 +176,14 @@ spec:
 #        fichero configuracion: Usuarios/Contraseñas
 #        tomcat-users.xml <<<- usuario/contraseña 
 
+#Pod/Deployment
+#---------------
+#Pod <--> PVC  <-->  PV (retain|delete)
+#Al borra el pod, no se borra el PVC asociado
+
+#StatefulSet
+#---------------
+#Pod ---> PVC  <-->  PV (retain|delete)
+#Al borra el pod, se borra el pvc? NO 
+#Por que el pod se levantaría en otro sitio
+#Que pasa si escalo? Hacia abajo VVV

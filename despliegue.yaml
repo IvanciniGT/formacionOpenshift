@@ -199,7 +199,7 @@ spec:
                     - name: almacenamiento-tomcat
                       mountPath: /carpeta
                     - name: aplicacion
-                      mountPath: /app
+                      mountPath: /app2
     volumeClaimTemplates:
       - metadata:
           name: almacenamiento-tomcat

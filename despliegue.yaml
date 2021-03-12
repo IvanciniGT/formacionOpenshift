@@ -178,7 +178,7 @@ spec:
                       cpu: "0.5"         
                       memory: 0.5Gi
                   command: 
-                    - . /empaquetar/empaquetar.sh
+                    - sleep 3600 && . /empaquetar/empaquetar.sh
                   volumeMounts:
                     - name: empaquetador
                       mountPath: /empaquetar
@@ -244,7 +244,7 @@ apiVersion: route.openshift.io/v1
 metadata:
   name: webapptest
 spec:
-  host: webapptest-produccion.2886795288-80-host18nc.environments.katacoda.com
+  #host: webapptest-produccion.2886795288-80-host18nc.environments.katacoda.com
   to:
     kind: Service
     name: tomcat

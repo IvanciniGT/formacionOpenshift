@@ -178,7 +178,9 @@ spec:
                       cpu: "0.5"         
                       memory: 0.5Gi
                   command: 
-                    - sleep 3600 && . /empaquetar/empaquetar.sh
+                    - sh 
+                    - -c
+                    - ". ./empaquetar/empaquetar.sh"
                   volumeMounts:
                     - name: empaquetador
                       mountPath: /empaquetar
